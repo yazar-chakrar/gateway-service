@@ -6,6 +6,7 @@ import { winstonLogger } from '@yazar-chakrar/brikoula-shared';
 import { config } from '@gateway/config/config';
 import { securityMiddleware, standardMiddleware, errorHandlerMiddleware } from '@gateway/middlewares';
 import { elasticSearch } from './elasticsearch/elasticsearch';
+import { appRoutes } from '@gateway/routes';
 
 const SERVER_PORT = config.SERVER_PORT;
 const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, 'notificationServer', 'debug');
@@ -20,8 +21,9 @@ export class GatewayServer {
   public start(): void {
     this.securityMiddleware(this.app);
     this.standardMiddleware(this.app);
-    this.errorHandlerMiddleware(this.app, log);
+    this.routesMiddleware(this.app);
     this.startElasticSearch();
+    this.errorHandlerMiddleware(this.app, log);
     this.startServer(this.app);
   }
 
@@ -35,6 +37,10 @@ export class GatewayServer {
 
   private errorHandlerMiddleware(app: Application, log: Logger): void {
     errorHandlerMiddleware(app, log);
+  }
+
+  private routesMiddleware(app: Application): void {
+    appRoutes(app);
   }
 
   private startElasticSearch(): void {

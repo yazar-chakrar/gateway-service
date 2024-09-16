@@ -2,8 +2,9 @@ import cookieSession from 'cookie-session';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import cors from 'cors';
-import { Application } from 'express';
+import { Application, NextFunction, Request, Response } from 'express';
 import { config } from '@gateway/config/config';
+import { axiosAuthInstance } from '@gateway/api/auth/auth.service';
 
 export const securityMiddleware = (app: Application): void => {
   app.set('trust proxy', 1);
@@ -27,4 +28,10 @@ export const securityMiddleware = (app: Application): void => {
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
     })
   );
+  app.use((req: Request, _res: Response, next: NextFunction) => {
+    if (req.session?.jwt) {
+      axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
+    }
+    next();
+  });
 };

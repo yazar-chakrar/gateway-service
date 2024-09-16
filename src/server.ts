@@ -5,7 +5,7 @@ import { Logger } from 'winston';
 import { winstonLogger } from '@yazar-chakrar/brikoula-shared';
 import { config } from '@gateway/config/config';
 import { securityMiddleware, standardMiddleware, errorHandlerMiddleware } from '@gateway/middlewares';
-import { elasticSearch } from './elasticsearch/elasticsearch';
+import { elasticSearch } from '@gateway/elasticsearch/elasticsearch';
 import { appRoutes } from '@gateway/routes';
 
 const SERVER_PORT = config.SERVER_PORT;
